@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Second Brain — Reading → Insight System</title>
+<link href="https://fonts.googleapis.com/css2?family=ASAP:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c1c1e;
+    --ink-light: #4a4a52;
+    --ink-faint: #9898a6;
+    --bg: #ffffff;
+    --surface: #f8f8fc;
+    --rule: rgba(28,28,30,0.09);
+
+    --blue: #5b9bd5;
+    --blue-light: #deeaf7;
+    --blue-mid: #b8d4ef;
+    --blue-text: #2c5f8a;
+
+    --pink: #d97aa6;
+    --pink-light: #fce8f2;
+    --pink-mid: #f2c4dc;
+    --pink-text: #8a3060;
+
+    --yellow: #e8c84a;
+    --yellow-light: #fdf6d0;
+    --yellow-mid: #f5e594;
+    --yellow-text: #7a5c00;
+
+    --font: 'ASAP', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .page-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  header {
+    padding: 3.5rem 0 2.5rem;
+    border-bottom: 1.5px solid var(--rule);
+    margin-bottom: 2.5rem;
+  }
+
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  h1 em { font-style: italic; color: var(--pink); }
+
+  .header-sub {
+    font-size: 15.5px;
+    color: var(--ink-light);
+    max-width: 540px;
+    line-height: 1.65;
+  }
+
+  .nav-tabs {
+    display: flex;
+    border-bottom: 1.5px solid var(--rule);
+    margin-bottom: 2.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border: none;
+    background: none;
+    padding: 0.7rem 1.25rem;
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px;
+    white-space: nowrap;
+    transition: color 0.18s, border-color 0.18s;
+  }
+  .tab-btn:hover { color: var(--ink-light); }
+  .tab-btn.active { color: var(--blue-text); border-bottom-color: var(--blue); }
+
+  .tab-panel { display: none; animation: fadeUp 0.3s ease; }
+  .tab-panel.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.4rem;
+  }
+
+  h2 {
+    font-size: 1.85rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 0.9rem;
+  }
+
+  h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.45rem; color: var(--ink); }
+
+  p { margin-bottom: 1rem; color: var(--ink-light); }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--ink); font-weight: 600; }
+  em { font-style: italic; }
+
+  /* CODE strip */
+  .code-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 2.4rem;
+  }
+
+  .code-cell {
+    background: var(--surface);
+    border: 1.5px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.1rem 1rem;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+  }
+  .code-cell:nth-child(1):hover { border-color: var(--blue);   background: var(--blue-light); }
+  .code-cell:nth-child(2):hover { border-color: var(--pink);   background: var(--pink-light); }
+  .code-cell:nth-child(3):hover { border-color: var(--yellow); background: var(--yellow-light); }
+  .code-cell:nth-child(4):hover { border-color: var(--pink);   background: var(--pink-light); }
+
+  .code-letter { font-size: 2rem; font-weight: 600; line-height: 1; margin-bottom: 0.2rem; }
+  .code-cell:nth-child(1) .code-letter { color: var(--blue); }
+  .code-cell:nth-child(2) .code-letter { color: var(--pink); }
+  .code-cell:nth-child(3) .code-letter { color: var(--yellow-text); }
+  .code-cell:nth-child(4) .code-letter { color: var(--pink); }
+
+  .code-word {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--ink-faint); display: block; margin-bottom: 0.35rem;
+  }
+  .code-desc { font-size: 12.5px; color: var(--ink-light); line-height: 1.45; }
+
+  /* Callout variants */
+  .callout {
+    border-left: 3px solid var(--blue);
+    padding: 0.85rem 1.15rem;
+    background: var(--blue-light);
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 14.5px;
+    color: var(--ink-light);
+  }
+  .callout strong { color: var(--blue-text); }
+  .callout.pink  { border-left-color: var(--pink);   background: var(--pink-light); }
+  .callout.pink strong  { color: var(--pink-text); }
+  .callout.yellow { border-left-color: var(--yellow); background: var(--yellow-light); }
+  .callout.yellow strong { color: var(--yellow-text); }
+
+  /* Format cards */
+  .format-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 580px) { .format-grid { grid-template-columns: 1fr; } }
+
+  .format-card {
+    background: var(--surface);
+    border: 1.5px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.1rem 1.2rem;
+    transition: border-color 0.15s;
+  }
+  .format-card:hover { border-color: var(--blue-mid); }
+
+  .format-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.65rem; }
+  .format-icon { font-size: 1.2rem; line-height: 1; }
+  .format-name { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); }
+  .format-card p { font-size: 13.5px; line-height: 1.6; margin-bottom: 0.55rem; }
+  .format-tool {
+    font-size: 11px; font-weight: 500; color: var(--blue-text);
+    background: var(--blue-light); padding: 0.2rem 0.65rem;
+    border-radius: 20px; display: inline-block;
+  }
+
+  /* PARA grid */
+  .para-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 1.5rem 0; }
+
+  .para-card { border-radius: 10px; padding: 1.2rem; border: 1.5px solid transparent; }
+  .para-card.projects  { background: var(--blue-light);   border-color: var(--blue-mid); }
+  .para-card.areas     { background: var(--pink-light);   border-color: var(--pink-mid); }
+  .para-card.resources { background: var(--yellow-light); border-color: var(--yellow-mid); }
+  .para-card.archive   { background: var(--surface);      border-color: var(--rule); }
+
+  .para-letter { font-size: 1.6rem; font-weight: 600; margin-bottom: 0.15rem; line-height: 1; }
+  .para-card.projects .para-letter  { color: var(--blue); }
+  .para-card.areas .para-letter     { color: var(--pink); }
+  .para-card.resources .para-letter { color: var(--yellow-text); }
+  .para-card.archive .para-letter   { color: var(--ink-faint); }
+
+  .para-card h3 { font-size: 0.95rem; margin-bottom: 0.35rem; }
+  .para-card p  { font-size: 13px; }
+
+  .para-examples { margin-top: 0.55rem; list-style: none; }
+  .para-examples li { font-size: 12.5px; color: var(--ink-light); padding: 0.12rem 0; }
+  .para-examples li::before { content: '↳ '; color: var(--ink-faint); }
+
+  /* Distil layers */
+  .layers { border: 1.5px solid var(--rule); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
+  .layer { padding: 1rem 1.25rem; border-bottom: 1px solid var(--rule); display: flex; gap: 1rem; align-items: flex-start; }
+  .layer:nth-child(1) { background: var(--blue-light); }
+  .layer:nth-child(2) { background: var(--pink-light); }
+  .layer:nth-child(3) { background: var(--yellow-light); }
+  .layer:nth-child(4) { background: var(--surface); }
+  .layer:last-child { border-bottom: none; }
+
+  .layer-num { font-size: 1.5rem; font-weight: 600; line-height: 1; min-width: 1.5rem; padding-top: 0.05rem; }
+  .layer:nth-child(1) .layer-num { color: var(--blue); }
+  .layer:nth-child(2) .layer-num { color: var(--pink); }
+  .layer:nth-child(3) .layer-num { color: var(--yellow-text); }
+  .layer:nth-child(4) .layer-num { color: var(--ink-faint); }
+
+  .layer-body h3 { font-size: 0.93rem; margin-bottom: 0.2rem; }
+  .layer-body p  { font-size: 13.5px; margin: 0; }
+
+  /* Checklist */
+  .checklist { list-style: none; margin: 1.2rem 0; }
+  .checklist li {
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    padding: 0.55rem 0; border-bottom: 1px solid var(--rule);
+    font-size: 14.5px; color: var(--ink-light); cursor: pointer;
+  }
+  .checklist li:last-child { border-bottom: none; }
+
+  .check-box {
+    width: 18px; height: 18px; border: 1.5px solid var(--ink-faint);
+    border-radius: 4px; flex-shrink: 0; margin-top: 3px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    font-size: 11px; color: transparent;
+  }
+  .checklist li.done .check-box { background: var(--blue); border-color: var(--blue); color: white; }
+  .checklist li.done span { text-decoration: line-through; color: var(--ink-faint); }
+
+  /* Rule block */
+  .rule-block {
+    background: var(--surface); border: 1.5px solid var(--rule);
+    border-radius: 10px; padding: 1.1rem 1.3rem; margin: 1.4rem 0; font-size: 14px;
+  }
+  .rule-label { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.45rem; }
+
+  /* Note template */
+  .note-template {
+    font-family: 'Courier New', monospace; font-size: 12.5px; line-height: 1.9;
+    background: #1c1c2e; color: #d8d8e8; border-radius: 10px;
+    padding: 1.4rem 1.7rem; margin: 1.5rem 0; white-space: pre; overflow-x: auto;
+  }
+  .note-template .nt-label   { color: #e8c84a; }
+  .note-template .nt-fill    { color: #85c5e0; }
+  .note-template .nt-comment { color: #6a6a82; }
+
+  /* Review steps */
+  .review-steps { counter-reset: step; list-style: none; margin: 1.3rem 0; }
+  .review-steps li {
+    counter-increment: step; display: flex; gap: 0.9rem;
+    margin-bottom: 0.9rem; font-size: 14.5px; color: var(--ink-light); align-items: flex-start;
+  }
+  .review-steps li::before {
+    content: counter(step); font-size: 0.85rem; font-weight: 600;
+    color: var(--blue-text); background: var(--blue-light);
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px; border: 1.5px solid var(--blue-mid);
+  }
+
+  /* Progress */
+  .setup-progress { margin: 1.5rem 0; }
+  .progress-bar-wrap {
+    background: var(--blue-light); border-radius: 99px; height: 7px;
+    margin-bottom: 0.55rem; overflow: hidden; border: 1px solid var(--blue-mid);
+  }
+  .progress-bar-fill { height: 100%; background: var(--blue); border-radius: 99px; transition: width 0.4s ease; }
+  .progress-label { font-size: 11.5px; font-weight: 500; color: var(--blue-text); }
+
+  /* Table */
+  .connections { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 1.3rem 0; }
+  .connections th {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-faint); text-align: left; padding: 0.5rem 0.8rem; border-bottom: 1.5px solid var(--rule);
+  }
+  .connections td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--rule); color: var(--ink-light); vertical-align: top; }
+  .connections tr:last-child td { border-bottom: none; }
+  .connections tr:hover td { background: var(--surface); }
+  .connections td:first-child { font-weight: 600; color: var(--ink); font-size: 13px; }
+
+  /* Accordion */
+  .accordion-item { border-bottom: 1px solid var(--rule); }
+  .accordion-btn {
+    width: 100%; background: none; border: none; text-align: left;
+    padding: 1rem 0; font-family: var(--font); font-size: 15px;
+    color: var(--ink); cursor: pointer; display: flex; justify-content: space-between;
+    align-items: center; transition: color 0.15s;
+  }
+  .accordion-btn:hover { color: var(--blue-text); }
+  .accordion-chevron { font-size: 11px; color: var(--ink-faint); transition: transform 0.22s; flex-shrink: 0; }
+  .accordion-btn.open .accordion-chevron { transform: rotate(180deg); }
+  .accordion-body { display: none; padding-bottom: 1.2rem; font-size: 14px; color: var(--ink-light); line-height: 1.7; }
+  .accordion-body.open { display: block; }
+  .accordion-body p { margin-bottom: 0.7rem; }
+
+  code {
+    font-family: 'Courier New', monospace; font-size: 11.5px;
+    background: var(--blue-light); color: var(--blue-text);
+    padding: 0.1em 0.45em; border-radius: 4px; border: 1px solid var(--blue-mid);
+  }
+
+  .pill {
+    display: inline-block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0.18rem 0.65rem; border-radius: 20px; margin-right: 0.3rem; margin-bottom: 0.4rem;
+  }
+  .pill-blue   { background: var(--blue-light);   color: var(--blue-text);   border: 1px solid var(--blue-mid); }
+  .pill-pink   { background: var(--pink-light);   color: var(--pink-text);   border: 1px solid var(--pink-mid); }
+  .pill-yellow { background: var(--yellow-light); color: var(--yellow-text); border: 1px solid var(--yellow-mid); }
+
+  footer {
+    margin-top: 4rem; padding-top: 1.8rem; border-top: 1.5px solid var(--rule);
+    font-size: 11px; font-weight: 500; letter-spacing: 0.05em; color: var(--ink-faint);
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <p class="header-eyebrow">Personal knowledge system · CODE framework</p>
+    <h1>My reading,<br><em>made useful</em></h1>
+    <p class="header-sub">A first-person reference for turning everything I read, listen to, and study into material for my art, my work, and my thinking. Built on Obsidian + CODE.</p>
+  </header>
+
+  <nav class="nav-tabs" role="tablist">
+    <button class="tab-btn active" onclick="switchTab('overview', this)" role="tab">Overview</button>
+    <button class="tab-btn" onclick="switchTab('capture', this)" role="tab">Capture</button>
+    <button class="tab-btn" onclick="switchTab('organize', this)" role="tab">Organize</button>
+    <button class="tab-btn" onclick="switchTab('distill', this)" role="tab">Distill</button>
+    <button class="tab-btn" onclick="switchTab('express', this)" role="tab">Express</button>
+    <button class="tab-btn" onclick="switchTab('setup', this)" role="tab">Setup</button>
+    <button class="tab-btn" onclick="switchTab('obsidian', this)" role="tab">Obsidian</button>
+  </nav>
+
+  <!-- OVERVIEW -->
+  <div class="tab-panel active" id="panel-overview">
+    <p class="section-label">The system at a glance</p>
+    <h2>CODE — my four-step loop</h2>
+    <p>Everything I read, hear, or study passes through this loop. The goal is not to store more — it's to <strong>make knowledge usable</strong> for my art, my work, and my thinking.</p>
+
+    <div class="code-strip">
+      <div class="code-cell" onclick="switchTab('capture', document.querySelector('[onclick*=capture]'))">
+        <div class="code-letter">C</div>
+        <span class="code-word">Capture</span>
+        <div class="code-desc">Save what resonates. One tool per format.</div>
+      </div>
+      <div class="code-cell" onclick="switchTab('organize', document.querySelector('[onclick*=organize]'))">
+        <div class="code-letter">O</div>
+        <span class="code-word">Organize</span>
+        <div class="code-desc">Route by actionability, not subject.</div>
+      </div>
+      <div class="code-cell" onclick="switchTab('distill', document.querySelector('[onclick*=distill]'))">
+        <div class="code-letter">D</div>
+        <span class="code-word">Distill</span>
+        <div class="code-desc">Compress in layers. Add my own voice.</div>
+      </div>
+      <div class="code-cell" onclick="switchTab('express', document.querySelector('[onclick*=express]'))">
+        <div class="code-letter">E</div>
+        <span class="code-word">Express</span>
+        <div class="code-desc">Turn notes into art, writing, work.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>The one rule I return to:</strong> Capture what resonates, not everything. Resonance is the filter. If I'm not sure, I don't save it.
+    </div>
+
+    <h3 style="margin-top:1.8rem">My reading formats</h3>
+    <p>Each format needs its own lightweight capture habit. The system connects them all inside Obsidian.</p>
+
+    <table class="connections">
+      <thead>
+        <tr><th>Format</th><th>Capture tool</th><th>Lands in Obsidian via</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Physical books</td><td>Voice memo or camera</td><td>Manual note after session</td></tr>
+        <tr><td>Kindle</td><td>Highlight in-app</td><td>Readwise auto-sync</td></tr>
+        <tr><td>Kobo</td><td>Highlight in-app</td><td>Readwise auto-sync</td></tr>
+        <tr><td>Audiobooks</td><td>Timestamp + 1 sentence</td><td>Voice → transcribe → note</td></tr>
+        <tr><td>Podcasts</td><td>Snipd clip</td><td>Readwise auto-sync</td></tr>
+        <tr><td>Articles / web</td><td>Readwise Reader / web clipper</td><td>Readwise auto-sync</td></tr>
+        <tr><td>Study materials</td><td>Write in own words immediately</td><td>Manual note, tagged #study</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CAPTURE -->
+  <div class="tab-panel" id="panel-capture">
+    <p class="section-label">Step one</p>
+    <h2>Capture</h2>
+    <p>My only job here is to notice what resonates and get it out of my head before I lose it. I don't evaluate or organise at capture time — that comes later.</p>
+
+    <div class="callout">
+      <strong>The resonance test:</strong> Would I want to remember this in five years? Would it change how I think, make, or work? If yes — capture it. If not — let it go.
+    </div>
+
+    <div class="format-grid">
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">📖</span><span class="format-name">Physical books</span></div>
+        <p>I don't annotate while reading — it breaks flow. Instead: sticky flags for pages to return to, then a 3-minute "book download" at the end of each session.</p>
+        <p>Book download = voice memo or typed note: what landed, what surprised me, what it connects to. Done.</p>
+        <span class="format-tool">Voice Memos → Obsidian inbox</span>
+      </div>
+
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">📱</span><span class="format-name">Kindle &amp; Kobo</span></div>
+        <p>Highlight freely. Add a note to any highlight I want to develop — even just a question mark or "!!" to mark it as important.</p>
+        <p>Readwise syncs everything automatically. I don't touch the highlights until Distill time.</p>
+        <span class="format-tool">Readwise → Obsidian (auto)</span>
+      </div>
+
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">🎧</span><span class="format-name">Audiobooks</span></div>
+        <p>Timestamp rule: when something strikes me, I pause and record: <em>"[timestamp] — [idea] — because [why it matters to me]."</em></p>
+        <p>The "because" is non-negotiable. It forces me to make the idea mine in the moment.</p>
+        <span class="format-tool">Voice memo → manual Obsidian note</span>
+      </div>
+
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">🎙</span><span class="format-name">Podcasts</span></div>
+        <p>Snipd: press the clip button at any moment worth keeping. It transcribes automatically. I add a 1-line reaction before moving on.</p>
+        <p>Syncs to Readwise → Obsidian without any extra work.</p>
+        <span class="format-tool">Snipd → Readwise → Obsidian (auto)</span>
+      </div>
+
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">🌐</span><span class="format-name">Articles &amp; web</span></div>
+        <p>I don't read articles as they appear in my feeds. I save them to Readwise Reader first, then read in a dedicated batch. Highlights sync automatically.</p>
+        <p>For full pages: Obsidian web clipper.</p>
+        <span class="format-tool">Readwise Reader → Obsidian (auto)</span>
+      </div>
+
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">📚</span><span class="format-name">Study materials</span></div>
+        <p>Feynman capture: I write what I just learned in my own words immediately, as if explaining it to someone unfamiliar with the subject.</p>
+        <p>Tagged #study and filed under the active project or Area in Obsidian.</p>
+        <span class="format-tool">Manual note → tagged #study</span>
+      </div>
+    </div>
+
+    <div class="rule-block">
+      <p class="rule-label">What I don't do</p>
+      <p>I don't capture everything. I don't highlight whole paragraphs "just in case." I don't save articles I haven't decided to actually read. The inbox fills up fast enough as it is.</p>
+    </div>
+  </div>
+
+  <!-- ORGANIZE -->
+  <div class="tab-panel" id="panel-organize">
+    <p class="section-label">Step two</p>
+    <h2>Organize</h2>
+    <p>I organize by <strong>actionability</strong>, not subject. The question I ask every note is: <em>what is this for right now?</em> — not <em>what is this about?</em></p>
+
+    <div class="para-grid">
+      <div class="para-card projects">
+        <div class="para-letter">P</div>
+        <h3>Projects</h3>
+        <p>Active work with a defined endpoint. A note goes here if it directly serves something I'm doing right now.</p>
+        <ul class="para-examples">
+          <li>An essay I'm writing</li>
+          <li>A current art series</li>
+          <li>An active study course</li>
+          <li>A work deliverable</li>
+        </ul>
+      </div>
+
+      <div class="para-card areas">
+        <div class="para-letter">A</div>
+        <h3>Areas</h3>
+        <p>Long-term responsibilities and practices with no end date. I maintain these, I don't complete them.</p>
+        <ul class="para-examples">
+          <li>My art practice</li>
+          <li>My professional domain</li>
+          <li>Health, relationships</li>
+          <li>Running reading list</li>
+        </ul>
+      </div>
+
+      <div class="para-card resources">
+        <div class="para-letter">R</div>
+        <h3>Resources</h3>
+        <p>My personal library. Topics I'm curious about, organised by theme. Most reading notes land here.</p>
+        <ul class="para-examples">
+          <li>Philosophy / ethics</li>
+          <li>Colour &amp; perception</li>
+          <li>Narrative structure</li>
+          <li>Psychology / cognition</li>
+        </ul>
+      </div>
+
+      <div class="para-card archive">
+        <div class="para-letter">A</div>
+        <h3>Archive</h3>
+        <p>Inactive items from the other three. Not deleted — parked. I can always search back into it.</p>
+        <ul class="para-examples">
+          <li>Finished book notes</li>
+          <li>Completed study units</li>
+          <li>Past projects</li>
+          <li>Old reading lists</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout pink">
+      <strong>My filing question:</strong> Does this serve an active Project? → Projects. An ongoing Area? → Areas. No active use, but genuinely interesting? → Resources. Everything else goes to Archive or I don't save it.
+    </div>
+
+    <div class="rule-block">
+      <p class="rule-label">How I process my inbox (once a week, ~15 min)</p>
+      <p>Everything captured during the week accumulates in an <code>Inbox</code> folder inside Obsidian. Once a week I process 10–20 items: read, decide, file. I don't try to keep inbox at zero daily — that's too much friction.</p>
+    </div>
+
+    <h3 style="margin-top:1.8rem">My reading list as a Resource</h3>
+    <p>My yearly reading list lives in <code>Resources/Reading</code> as a single note, with books organised by theme, not status. When I start a book, I create a book note linked from this list. When finished, the book note moves to Archive; the reading list stays current.</p>
+  </div>
+
+  <!-- DISTILL -->
+  <div class="tab-panel" id="panel-distill">
+    <p class="section-label">Step three</p>
+    <h2>Distill</h2>
+    <p>Raw captures are ingredients, not knowledge. Distilling is where I turn a pile of highlights into something I can actually use — and where I add my own voice to what I've read.</p>
+
+    <div class="layers">
+      <div class="layer">
+        <div class="layer-num">1</div>
+        <div class="layer-body">
+          <h3>Raw capture</h3>
+          <p>The highlight, clip, voice note, or photo as captured. I don't edit at this stage. This layer exists automatically — it's everything in my inbox after a reading session.</p>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-num">2</div>
+        <div class="layer-body">
+          <h3>Bold + gloss</h3>
+          <p>When I revisit a note, I bold the single most important idea per passage. Then I add one line in my own words below each bolded section — paraphrase, question, or reaction. This is the most important layer.</p>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-num">3</div>
+        <div class="layer-body">
+          <h3>Summary + my insight</h3>
+          <p>When a note becomes useful for something I'm making, I write a 2–3 sentence summary at the top of the note. Then I add a <strong>✦ Creative connection</strong> field: where does this appear in my art or work? What formal, visual, or emotional idea does it touch?</p>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-num">4</div>
+        <div class="layer-body">
+          <h3>Linked to other notes</h3>
+          <p>The best notes start linking outward — <code>[[related concept]]</code>, <code>[[book title]]</code>, <code>[[project name]]</code>. This is where the network of ideas starts to form and surprising connections emerge.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout yellow">
+      <strong>The distill rule I keep:</strong> Add value to a note every time I touch it. Even one line. Even just adding a link. I never distill everything at once — only what I actually need.
+    </div>
+
+    <h3 style="margin-top:1.8rem">My book note template</h3>
+    <p>Every book gets one note. I fill it in progressively — not all at the end of the book.</p>
+
+    <div class="note-template"><span class="nt-comment"># Book title — Author</span>
+
+<span class="nt-label">Status:</span>       <span class="nt-fill">Reading / Finished / Archived</span>
+<span class="nt-label">Finished:</span>     <span class="nt-fill">YYYY-MM-DD</span>
+<span class="nt-label">Format:</span>       <span class="nt-fill">Physical / Kindle / Kobo / Audio</span>
+<span class="nt-label">Reading list:</span> <span class="nt-fill">[[Year Reading List]]</span>
+<span class="nt-label">Tags:</span>         <span class="nt-fill">#resource/[theme]</span>
+
+<span class="nt-comment">## My 2–3 sentence summary</span>
+<span class="nt-fill">(Written in my own words after finishing)</span>
+
+<span class="nt-comment">## ✦ Creative connection</span>
+<span class="nt-fill">Where does this appear in my art or work?
+What formal / visual / emotional idea does it touch?</span>
+
+<span class="nt-comment">## Key ideas</span>
+<span class="nt-fill">(Distilled highlights — bolded core idea, my gloss below each)</span>
+
+<span class="nt-comment">## Raw highlights</span>
+<span class="nt-fill">(Synced from Readwise — untouched)</span>
+
+<span class="nt-comment">## Questions this book opened</span>
+<span class="nt-fill">(What I now want to investigate further)</span></div>
+
+    <h3>My study material template</h3>
+    <p>Study notes follow a slightly different format — output-focused, since I need to be able to retrieve and apply specific knowledge.</p>
+
+    <div class="note-template"><span class="nt-comment"># [Topic / Unit name]</span>
+
+<span class="nt-label">Source:</span>  <span class="nt-fill">Course / Book / Article title</span>
+<span class="nt-label">Project:</span> <span class="nt-fill">[[Active study project]]</span>
+<span class="nt-label">Tags:</span>    <span class="nt-fill">#study #resource/[theme]</span>
+
+<span class="nt-comment">## The core idea (Feynman version)</span>
+<span class="nt-fill">Explain this as if to someone unfamiliar. In my own words.
+No jargon unless I've defined it.</span>
+
+<span class="nt-comment">## Why this matters to me</span>
+<span class="nt-fill">How does this connect to my practice / work / curiosity?</span>
+
+<span class="nt-comment">## Key terms &amp; definitions</span>
+
+<span class="nt-comment">## Questions I still have</span>
+
+<span class="nt-comment">## Raw notes</span></div>
+  </div>
+
+  <!-- EXPRESS -->
+  <div class="tab-panel" id="panel-express">
+    <p class="section-label">Step four</p>
+    <h2>Express</h2>
+    <p>This is the point. All the capturing, organising, and distilling exists so that when I sit down to make something — a piece of art, an essay, a proposal, a conversation — I'm not starting from nothing.</p>
+
+    <div class="callout pink">
+      <strong>The shift I make:</strong> My Second Brain is not a warehouse. It's a factory. Every note is raw material. I'm always asking: what can I make from what I know?
+    </div>
+
+    <h3 style="margin-top:1.8rem">Intermediate Packets — how I work in small units</h3>
+    <p>Instead of trying to produce a finished work in one sitting, I work in Intermediate Packets — small, completed units that accumulate into larger things.</p>
+
+    <table class="connections">
+      <thead>
+        <tr><th>Packet type</th><th>What it is</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Concept note</td><td>One idea, distilled and in my own words</td><td>What I understand about negative capability</td></tr>
+        <tr><td>Connection note</td><td>Two ideas from different sources, linked</td><td>How this essay on light connects to that novel</td></tr>
+        <tr><td>Creative seed</td><td>A phrase, image, or question that could become a work</td><td>A line from a poem that holds an entire colour for me</td></tr>
+        <tr><td>Argument draft</td><td>A partial argument or position, not finished</td><td>Three paragraphs on why I make the work I make</td></tr>
+        <tr><td>Reference set</td><td>A cluster of notes relevant to one project</td><td>Five notes on opacity in painting, pulled together</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:1.8rem">How I use my notes when making</h3>
+
+    <div class="format-grid">
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">🎨</span><span class="format-name">For art</span></div>
+        <p>Search my Resources for the theme I'm working with. Look at the ✦ Creative connection fields. Pull any notes where I've already made the leap from idea to image.</p>
+        <p>My book notes often contain the best unexpected sources — novels, philosophy, science that I read for curiosity, not for art.</p>
+      </div>
+
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">✍️</span><span class="format-name">For writing</span></div>
+        <p>Search for the topic. Assemble relevant concept notes and connection notes into a scratch document. Write from there — not from a blank page.</p>
+        <p>The goal is to already have something on the page before I "start writing."</p>
+      </div>
+
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">💼</span><span class="format-name">For work</span></div>
+        <p>Pull the relevant Project and Area notes. Surface any resource notes tagged with the relevant theme. Look for insights from reading that reframe the work problem.</p>
+        <p>Unexpected cross-domain ideas are the most valuable — something from a novel that clarifies a strategy.</p>
+      </div>
+
+      <div class="format-card">
+        <div class="format-header"><span class="format-icon">🧠</span><span class="format-name">For thinking</span></div>
+        <p>Periodic "connection sessions": I open my graph view and look for clusters. What themes keep emerging? What books connect in unexpected ways?</p>
+        <p>Some of my best insights come not from adding new notes but from looking at what I already have.</p>
+      </div>
+    </div>
+
+    <div class="rule-block">
+      <p class="rule-label">The express principle I return to</p>
+      <p>Information only becomes knowledge when I put it to use. Saving notes is not learning. Making something with them is. I try to produce one Intermediate Packet per reading session — even if it's just a three-sentence connection note.</p>
+    </div>
+  </div>
+
+  <!-- SETUP -->
+  <div class="tab-panel" id="panel-setup">
+    <p class="section-label">Getting started</p>
+    <h2>My setup checklist</h2>
+    <p>I already have Obsidian installed and the four PARA folders created. This is the rest of the foundation. I check things off as I complete them.</p>
+
+    <div class="setup-progress">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-fill" style="width: 14%"></div>
+      </div>
+      <p class="progress-label" id="progress-label">1 of 7 steps complete</p>
+    </div>
+
+    <ul class="checklist" id="setup-checklist">
+      <li class="done" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <span>Install Obsidian and create the four PARA folders: <code>Projects</code>, <code>Areas</code>, <code>Resources</code>, <code>Archive</code></span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <span>Create an <code>Inbox</code> folder inside Obsidian for unprocessed captures</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <span>Set up Readwise and connect my Kindle account — let highlights sync automatically</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <span>Install the Readwise Official plugin in Obsidian — point it at my <code>Inbox</code> folder</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <span>Install the Obsidian Web Clipper in my browser for saving articles</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <span>Set up Snipd on my phone for podcast captures — connect to Readwise</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <span>Create my first book note using the template in the Distill tab</span>
+      </li>
+    </ul>
+
+    <h3 style="margin-top: 2rem">My weekly review (15 minutes)</h3>
+    <p>Once a week — same time, same place. This is what keeps the system alive.</p>
+
+    <ol class="review-steps">
+      <li>Open <code>Inbox</code> in Obsidian. Process 10–20 items: read, decide, file into PARA.</li>
+      <li>Check active Projects: is there anything I read this week that serves a current project? Link it.</li>
+      <li>Add one layer of distillation to 3–5 notes I've been sitting on.</li>
+      <li>Look for one connection between two notes from different books or sources. Write a brief connection note if I find one.</li>
+      <li>Ask: what am I making right now? Are my notes serving it? If not — what do I need?</li>
+    </ol>
+
+    <div class="callout yellow">
+      <strong>The review I don't skip:</strong> Even if I only process 5 notes and find one connection, the review is worth doing. The system only compounds if I keep the habit.
+    </div>
+  </div>
+
+  <!-- OBSIDIAN -->
+  <div class="tab-panel" id="panel-obsidian">
+    <p class="section-label">Tool notes</p>
+    <h2>Obsidian — how I use it</h2>
+    <p>Obsidian stores all notes as plain Markdown files I own. Nothing is locked in a proprietary format. Here are the specific features and plugins I actually use — not a comprehensive list, just the ones that serve this system.</p>
+
+    <div style="margin-top: 1.6rem">
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          Folder structure — what mine looks like
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p>Inside my vault:</p>
+          <div class="note-template" style="font-size:12px; line-height:1.85">Vault/
+├── <span class="nt-label">Inbox/</span>          <span class="nt-comment">← all new captures land here</span>
+├── <span class="nt-label">Projects/</span>       <span class="nt-comment">← one folder per active project</span>
+│   └── Essay on colour/
+├── <span class="nt-label">Areas/</span>
+│   ├── Art practice/
+│   └── Work/
+├── <span class="nt-label">Resources/</span>      <span class="nt-comment">← my personal library</span>
+│   ├── Reading/    <span class="nt-comment">← book notes + reading list</span>
+│   ├── Philosophy/
+│   ├── Science/
+│   └── Craft/
+└── <span class="nt-label">Archive/</span>        <span class="nt-comment">← finished / inactive</span></div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          Plugins I use (and why)
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p><strong>Readwise Official</strong> — syncs all my Kindle, Kobo, podcast, and article highlights into my Inbox automatically. This is the most important plugin in the system.</p>
+          <p><strong>Dataview</strong> — lets me query my notes like a database. I use it to see all books with status "Reading", or list all notes tagged #study created this month.</p>
+          <p><strong>Canvas</strong> — built into Obsidian. I use this for creative sessions: pull related notes onto a canvas and look for patterns. Useful for art projects and writing planning.</p>
+          <p><strong>Templates</strong> — built in. Stores my book note template and study template so I can create a new note from the template with one command.</p>
+          <p><strong>Graph View</strong> — built in. I open this occasionally (not obsessively) to see which notes are densely linked. The dense nodes are usually my most important ideas.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          Linking — how I connect notes
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p>I use <code>[[double brackets]]</code> to link notes. A few habits:</p>
+          <p>Every book note links to its author, its themes, and any active project it serves. Every concept note links to the book it came from. When two ideas from different sources connect, I create a small connection note that links both — this is often where the most interesting thinking happens.</p>
+          <p>I don't link obsessively. I link when a connection is genuinely useful, not to make my graph look impressive.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          Tags — how I use them
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p>I keep tags minimal. My main tag system:</p>
+          <p>
+            <span class="pill pill-blue">#study</span> note from study materials, needs review<br>
+            <span class="pill pill-pink">#seed</span> a potential creative idea, not yet developed<br>
+            <span class="pill pill-yellow">#question</span> something I want to investigate further<br>
+            <span class="pill pill-blue">#resource/theme</span> e.g. <code>#resource/philosophy</code><br>
+            <span class="pill pill-pink">#review</span> needs another pass of distillation
+          </p>
+          <p style="margin-top:0.7rem">I don't use tags to replace folders. Folders handle location; tags handle type and status.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          Mobile — capturing on the go
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p>Obsidian has a mobile app. I use it for two things only: quick captures to Inbox while reading on my phone, and checking a note I need while away from my desk.</p>
+          <p>I sync my vault using iCloud (built in) or Obsidian Sync. I don't process or organise notes on mobile — that's a desktop task during my weekly review.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          Kobo setup — getting highlights into Obsidian
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p>Kobo highlights sync to Readwise via the Readwise browser extension or the Kobo ↔ Readwise direct integration (available in Readwise settings). Once connected, highlights sync automatically whenever my Kobo syncs.</p>
+          <p>I add a short note to important Kobo highlights before moving on — even just a single word. This makes them much more useful later when they arrive in my Obsidian inbox without any context.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-block" style="margin-top:2rem">
+      <p class="rule-label">The Obsidian principle I come back to</p>
+      <p>My notes are plain text files. They'll be readable in 30 years with any text editor. That matters to me. The system is mine — not locked in anyone's platform.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Personal knowledge system · Built on CODE (Forte Labs) + PARA + Obsidian · Last updated <span id="last-updated"></span></p>
+  </footer>
+
+</div>
+
+<script>
+  document.getElementById('last-updated').textContent =
+    new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const panel = document.getElementById('panel-' + id);
+    if (panel) panel.classList.add('active');
+    if (btn && btn.classList) {
+      btn.classList.add('active');
+    } else {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) {
+          b.classList.add('active');
+        }
+      });
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleCheck(li) {
+    li.classList.toggle('done');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const all  = document.querySelectorAll('#setup-checklist li');
+    const done = document.querySelectorAll('#setup-checklist li.done');
+    const pct  = Math.round((done.length / all.length) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent =
+      done.length + ' of ' + all.length + ' steps complete';
+  }
+
+  updateProgress();
+
+  function toggleAccordion(btn) {
+    const body   = btn.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.accordion-btn').forEach(b => b.classList.remove('open'));
+    if (!isOpen) {
+      body.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+</script>
+</body>
+</html>
