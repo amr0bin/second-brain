@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Reading Arc</title>
+<link href="https://fonts.googleapis.com/css2?family=ASAP:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c1c1e;
+    --ink-light: #4a4a52;
+    --ink-faint: #9898a6;
+    --bg: #ffffff;
+    --surface: #f8f8fc;
+    --rule: rgba(28,28,30,0.09);
+
+    --blue: #5b9bd5;
+    --blue-light: #deeaf7;
+    --blue-mid: #b8d4ef;
+    --blue-text: #2c5f8a;
+
+    --pink: #d97aa6;
+    --pink-light: #fce8f2;
+    --pink-mid: #f2c4dc;
+    --pink-text: #8a3060;
+
+    --yellow: #e8c84a;
+    --yellow-light: #fdf6d0;
+    --yellow-mid: #f5e594;
+    --yellow-text: #7a5c00;
+
+    --q1: #5b9bd5;
+    --q1-light: #deeaf7;
+    --q1-mid: #b8d4ef;
+    --q1-text: #2c5f8a;
+
+    --q2: #d97aa6;
+    --q2-light: #fce8f2;
+    --q2-mid: #f2c4dc;
+    --q2-text: #8a3060;
+
+    --q3: #5aad8e;
+    --q3-light: #e0f4ed;
+    --q3-mid: #a8dcc9;
+    --q3-text: #1e6b52;
+
+    --q4: #e8c84a;
+    --q4-light: #fdf6d0;
+    --q4-mid: #f5e594;
+    --q4-text: #7a5c00;
+
+    --font: 'ASAP', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 860px; margin: 0 auto; padding: 0 2rem 6rem; }
+
+  /* ── HEADER ── */
+  header {
+    padding: 3.5rem 0 2.5rem;
+    border-bottom: 1.5px solid var(--rule);
+    margin-bottom: 2.5rem;
+  }
+
+  .header-eyebrow {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--blue); margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 600; line-height: 1.08; letter-spacing: -0.025em;
+    color: var(--ink); margin-bottom: 0.9rem;
+  }
+
+  h1 em { font-style: italic; color: var(--pink); }
+
+  .header-sub {
+    font-size: 15.5px; color: var(--ink-light); max-width: 560px; line-height: 1.65;
+  }
+
+  /* ── QUARTER NAV ── */
+  .quarter-nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 2.5rem;
+  }
+
+  .q-btn {
+    font-family: var(--font);
+    border: 1.5px solid var(--rule);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 1rem 0.75rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.18s, background 0.18s;
+  }
+
+  .q-btn:hover { border-color: var(--blue-mid); background: var(--blue-light); }
+
+  .q-btn.active-q1 { border-color: var(--q1); background: var(--q1-light); }
+  .q-btn.active-q2 { border-color: var(--q2); background: var(--q2-light); }
+  .q-btn.active-q3 { border-color: var(--q3); background: var(--q3-light); }
+  .q-btn.active-q4 { border-color: var(--q4); background: var(--q4-light); }
+
+  .q-num {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; margin-bottom: 0.3rem;
+  }
+  .q1 .q-num, .active-q1 .q-num { color: var(--q1-text); }
+  .q2 .q-num, .active-q2 .q-num { color: var(--q2-text); }
+  .q3 .q-num, .active-q3 .q-num { color: var(--q3-text); }
+  .q4 .q-num, .active-q4 .q-num { color: var(--q4-text); }
+
+  .q-label {
+    font-size: 12px; font-weight: 500; color: var(--ink-light);
+    line-height: 1.35; display: block;
+  }
+
+  .q-weeks {
+    font-size: 10.5px; font-weight: 400; color: var(--ink-faint);
+    margin-top: 0.25rem; display: block;
+  }
+
+  /* ── CONTROLS ROW ── */
+  .controls-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+
+  .search-wrap input {
+    font-family: var(--font);
+    font-size: 14px;
+    width: 100%;
+    padding: 0.55rem 0.9rem 0.55rem 2.2rem;
+    border: 1.5px solid var(--rule);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.18s;
+  }
+
+  .search-wrap input:focus { border-color: var(--blue); }
+  .search-wrap input::placeholder { color: var(--ink-faint); }
+
+  .search-icon {
+    position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%);
+    font-size: 13px; color: var(--ink-faint); pointer-events: none;
+  }
+
+  .filter-pills {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+
+  .filter-pill {
+    font-family: var(--font);
+    font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    border: 1.5px solid var(--rule);
+    background: var(--surface);
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-pill:hover { border-color: var(--blue-mid); color: var(--blue-text); }
+  .filter-pill.on { background: var(--blue-light); border-color: var(--blue); color: var(--blue-text); }
+  .filter-pill.joy.on { background: var(--pink-light); border-color: var(--pink); color: var(--pink-text); }
+
+  /* ── QUARTER PANEL ── */
+  .q-panel { display: none; }
+  .q-panel.active { display: block; animation: fadeUp 0.3s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-header {
+    margin-bottom: 1.8rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1.5px solid var(--rule);
+  }
+
+  .q-header-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; margin-bottom: 0.4rem;
+  }
+
+  .q-header h2 {
+    font-size: 1.6rem; font-weight: 600; letter-spacing: -0.015em;
+    line-height: 1.2; margin-bottom: 0.5rem;
+  }
+
+  .q-header p { font-size: 14.5px; color: var(--ink-light); max-width: 600px; }
+
+  /* ── WEEK CARD ── */
+  .weeks-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .week-card {
+    border: 1.5px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.18s;
+  }
+
+  .week-card.hidden { display: none; }
+
+  .week-card:hover { border-color: var(--blue-mid); }
+  .q-panel.q2-panel .week-card:hover { border-color: var(--q2-mid); }
+  .q-panel.q3-panel .week-card:hover { border-color: var(--q3-mid); }
+  .q-panel.q4-panel .week-card:hover { border-color: var(--q4-mid); }
+
+  .week-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    gap: 1rem;
+    background: var(--bg);
+    user-select: none;
+  }
+
+  .week-head-left { display: flex; align-items: center; gap: 0.85rem; min-width: 0; }
+
+  .week-num-badge {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; padding: 0.2rem 0.65rem;
+    border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+  }
+
+  .q1-panel .week-num-badge { background: var(--q1-light); color: var(--q1-text); border: 1px solid var(--q1-mid); }
+  .q2-panel .week-num-badge { background: var(--q2-light); color: var(--q2-text); border: 1px solid var(--q2-mid); }
+  .q3-panel .week-num-badge { background: var(--q3-light); color: var(--q3-text); border: 1px solid var(--q3-mid); }
+  .q4-panel .week-num-badge { background: var(--q4-light); color: var(--q4-text); border: 1px solid var(--q4-mid); }
+
+  .joy-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--pink); flex-shrink: 0;
+    display: none;
+  }
+  .is-joy .joy-dot { display: inline-block; }
+
+  .week-title {
+    font-size: 15px; font-weight: 500; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .week-subtitle {
+    font-size: 12px; color: var(--ink-faint); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+    display: none;
+  }
+
+  .week-head-right { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+
+  .read-toggle {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.2rem 0.65rem; border-radius: 20px; cursor: pointer;
+    border: 1.5px solid var(--rule); background: var(--surface); color: var(--ink-faint);
+    transition: all 0.15s; font-family: var(--font); white-space: nowrap;
+  }
+
+  .read-toggle:hover { border-color: var(--blue); color: var(--blue-text); }
+  .read-toggle.read { background: var(--blue-light); border-color: var(--blue); color: var(--blue-text); }
+
+  .chevron {
+    font-size: 11px; color: var(--ink-faint);
+    transition: transform 0.22s; flex-shrink: 0;
+  }
+
+  .week-card.open .chevron { transform: rotate(180deg); }
+
+  /* Week body */
+  .week-body {
+    display: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  .week-card.open .week-body { display: block; }
+
+  .week-body-inner {
+    padding: 1.2rem 1.25rem 1.4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 600px) { .week-body-inner { grid-template-columns: 1fr; } }
+
+  .reading-item {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+
+  .reading-icon {
+    font-size: 1.1rem; line-height: 1.4; flex-shrink: 0; margin-top: 0.05rem;
+  }
+
+  .reading-content { min-width: 0; }
+
+  .reading-type {
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-faint); display: block; margin-bottom: 0.15rem;
+  }
+
+  .reading-title {
+    font-size: 14px; font-weight: 500; color: var(--ink);
+    line-height: 1.35; display: block;
+  }
+
+  .reading-author {
+    font-size: 12.5px; color: var(--ink-faint); display: block;
+    margin-top: 0.1rem; font-style: italic;
+  }
+
+  /* Journal prompt */
+  .journal-row {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--rule);
+    padding-top: 1rem;
+    margin-top: 0.25rem;
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+  }
+
+  .journal-icon { font-size: 1rem; flex-shrink: 0; padding-top: 0.1rem; }
+
+  .journal-label {
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-faint); display: block; margin-bottom: 0.2rem;
+  }
+
+  .journal-prompt { font-size: 14px; color: var(--ink-light); font-style: italic; line-height: 1.5; }
+
+  /* Notes area */
+  .notes-row {
+    grid-column: 1 / -1;
+    margin-top: 0.5rem;
+  }
+
+  .notes-label {
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.4rem; display: block;
+  }
+
+  .notes-textarea {
+    font-family: var(--font);
+    font-size: 13.5px;
+    width: 100%;
+    min-height: 72px;
+    padding: 0.65rem 0.85rem;
+    border: 1.5px solid var(--rule);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    line-height: 1.6;
+    transition: border-color 0.18s;
+  }
+  .notes-textarea:focus { border-color: var(--blue); }
+  .notes-textarea::placeholder { color: var(--ink-faint); }
+
+  /* ── PROGRESS STRIP ── */
+  .progress-strip {
+    background: var(--surface);
+    border: 1.5px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .progress-stat { text-align: center; }
+  .progress-stat-num {
+    font-size: 1.5rem; font-weight: 600; color: var(--ink);
+    line-height: 1; display: block; margin-bottom: 0.2rem;
+  }
+  .progress-stat-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-faint);
+  }
+
+  .progress-bar-group { flex: 1; min-width: 200px; }
+
+  .progress-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 11px; font-weight: 500; color: var(--ink-faint);
+    margin-bottom: 0.4rem;
+  }
+
+  .progress-bar-wrap {
+    background: var(--blue-light); border-radius: 99px;
+    height: 7px; overflow: hidden; border: 1px solid var(--blue-mid);
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-bar-fill {
+    height: 100%; background: var(--blue);
+    border-radius: 99px; transition: width 0.4s ease;
+  }
+
+  /* ── THEME INDEX ── */
+  .theme-index {
+    margin-bottom: 2.5rem;
+    display: none;
+  }
+  .theme-index.visible { display: block; }
+
+  .theme-index-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.8rem;
+  }
+
+  .theme-cloud {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+
+  .theme-tag {
+    font-size: 11.5px; font-weight: 500;
+    padding: 0.25rem 0.75rem; border-radius: 20px; cursor: pointer;
+    border: 1.5px solid var(--rule); background: var(--surface);
+    color: var(--ink-light); transition: all 0.15s;
+  }
+  .theme-tag:hover, .theme-tag.active {
+    background: var(--yellow-light); border-color: var(--yellow);
+    color: var(--yellow-text);
+  }
+
+  /* ── SEARCH RESULTS ── */
+  .no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--ink-faint);
+    font-size: 15px;
+    display: none;
+  }
+
+  /* ── JOY BADGE ── */
+  .joy-badge {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.18rem 0.6rem; border-radius: 20px;
+    background: var(--pink-light); color: var(--pink-text);
+    border: 1px solid var(--pink-mid);
+    flex-shrink: 0;
+  }
+
+  /* ── FINAL NOTE ── */
+  .final-note {
+    margin-top: 3rem;
+    padding: 2rem;
+    border-radius: 12px;
+    background: var(--yellow-light);
+    border: 1.5px solid var(--yellow-mid);
+    text-align: center;
+  }
+
+  .final-note p {
+    font-size: 16px; font-style: italic; color: var(--yellow-text);
+    line-height: 1.6;
+  }
+
+  .final-note strong { color: var(--yellow-text); font-style: normal; }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 4rem; padding-top: 1.8rem;
+    border-top: 1.5px solid var(--rule);
+    font-size: 11px; font-weight: 500; letter-spacing: 0.05em; color: var(--ink-faint);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .quarter-nav { grid-template-columns: repeat(2, 1fr); }
+    .progress-strip { gap: 1rem; }
+    .week-subtitle { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <p class="header-eyebrow">2026 · Personal reading arc</p>
+    <h1>A year of<br><em>companionship</em></h1>
+    <p class="header-sub">52 weeks. 4 quarters. Books, audiobooks, poetry, and a question to sit with. This is not a schedule — it is a companionship.</p>
+  </header>
+
+  <!-- Progress strip -->
+  <div class="progress-strip">
+    <div class="progress-stat">
+      <span class="progress-stat-num" id="stat-read">0</span>
+      <span class="progress-stat-label">weeks read</span>
+    </div>
+    <div class="progress-stat">
+      <span class="progress-stat-num" id="stat-total">52</span>
+      <span class="progress-stat-label">total weeks</span>
+    </div>
+    <div class="progress-bar-group">
+      <div class="progress-bar-label">
+        <span>2026 reading progress</span>
+        <span id="stat-pct">0%</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+      </div>
+      <div class="progress-bar-label" style="font-size:10px; color: var(--pink-text)">
+        <span>● Joy weeks marked in pink</span>
+        <span id="stat-joy">0 / 7 joy weeks read</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quarter nav -->
+  <div class="quarter-nav">
+    <button class="q-btn active-q1 q1" onclick="showQ('q1', this)">
+      <div class="q-num">Q1</div>
+      <span class="q-label">Orientation &amp; Attention</span>
+      <span class="q-weeks">Weeks 1–13</span>
+    </button>
+    <button class="q-btn q2" onclick="showQ('q2', this)">
+      <div class="q-num">Q2</div>
+      <span class="q-label">Care, Learning &amp; Making</span>
+      <span class="q-weeks">Weeks 14–26</span>
+    </button>
+    <button class="q-btn q3" onclick="showQ('q3', this)">
+      <div class="q-num">Q3</div>
+      <span class="q-label">Body, Nature &amp; Repair</span>
+      <span class="q-weeks">Weeks 27–39</span>
+    </button>
+    <button class="q-btn q4" onclick="showQ('q4', this)">
+      <div class="q-num">Q4</div>
+      <span class="q-label">Time, Aging &amp; Offering</span>
+      <span class="q-weeks">Weeks 40–52</span>
+    </button>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-row">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search-input" placeholder="Search by title, author, or theme…" oninput="filterWeeks()">
+    </div>
+    <div class="filter-pills">
+      <button class="filter-pill" onclick="toggleFilter('book', this)">📖 Books</button>
+      <button class="filter-pill" onclick="toggleFilter('audio', this)">🎧 Audio</button>
+      <button class="filter-pill" onclick="toggleFilter('poetry', this)">✦ Poetry</button>
+      <button class="filter-pill joy" onclick="toggleFilter('joy', this)">● Joy weeks</button>
+    </div>
+  </div>
+
+  <div class="no-results" id="no-results">No weeks match your search.</div>
+
+  <!-- ═══ Q1 ═══ -->
+  <div class="q-panel q1-panel active" id="q1">
+    <div class="q-header">
+      <p class="q-header-label" style="color:var(--q1-text)">Q1 · Weeks 1–13</p>
+      <h2>Orientation &amp; Attention</h2>
+      <p>Learning how to see, feel, and tell the truth of a life</p>
+    </div>
+    <div class="weeks-list">
+
+      <!-- WEEK 1 -->
+      <div class="week-card" data-week="1" data-q="q1" data-theme="attention devotion" data-joy="false" data-text="attention devotion gilead marilynne robinson four thousand weeks oliver burkeman mary oliver devotions">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left">
+            <span class="week-num-badge">Week 1</span>
+            <div class="joy-dot"></div>
+            <div>
+              <div class="week-title">Attention as Devotion</div>
+            </div>
+          </div>
+          <div class="week-head-right">
+            <button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="reading-item">
+              <span class="reading-icon">📖</span>
+              <div class="reading-content">
+                <span class="reading-type">Book</span>
+                <span class="reading-title">Gilead</span>
+                <span class="reading-author">Marilynne Robinson</span>
+              </div>
+            </div>
+            <div class="reading-item">
+              <span class="reading-icon">🎧</span>
+              <div class="reading-content">
+                <span class="reading-type">Audiobook</span>
+                <span class="reading-title">Four Thousand Weeks</span>
+                <span class="reading-author">Oliver Burkeman</span>
+              </div>
+            </div>
+            <div class="reading-item">
+              <span class="reading-icon">✦</span>
+              <div class="reading-content">
+                <span class="reading-type">Poetry</span>
+                <span class="reading-title">Devotions</span>
+                <span class="reading-author">Mary Oliver</span>
+              </div>
+            </div>
+            <div class="journal-row">
+              <span class="journal-icon">✎</span>
+              <div>
+                <span class="journal-label">Journal prompt</span>
+                <span class="journal-prompt">Where in my life do I already know how to pay attention?</span>
+              </div>
+            </div>
+            <div class="notes-row">
+              <span class="notes-label">My notes</span>
+              <textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w1', this.value)"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WEEK 2 -->
+      <div class="week-card" data-week="2" data-q="q1" data-theme="memory identity" data-joy="false" data-text="memory identity sense of an ending julian barnes being you anil seth ws merwin garden time">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left">
+            <span class="week-num-badge">Week 2</span><div class="joy-dot"></div>
+            <div><div class="week-title">Memory &amp; Identity</div></div>
+          </div>
+          <div class="week-head-right">
+            <button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Sense of an Ending</span><span class="reading-author">Julian Barnes</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Being You</span><span class="reading-author">Anil Seth</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Garden Time</span><span class="reading-author">W.S. Merwin</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Which memories feel truest — and why might that be?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w2', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 3 -->
+      <div class="week-card" data-week="3" data-q="q1" data-theme="quiet lives solitude" data-joy="false" data-text="quiet lives stoner john williams lonely century noreena hertz rilke letters young poet">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 3</span><div class="joy-dot"></div><div><div class="week-title">Quiet Lives</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Stoner</span><span class="reading-author">John Williams</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Lonely Century</span><span class="reading-author">Noreena Hertz</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Letters to a Young Poet</span><span class="reading-author">Rilke</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What kind of life do I quietly admire?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w3', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 4 -->
+      <div class="week-card" data-week="4" data-q="q1" data-theme="voice silence" data-joy="false" data-text="voice silence never let me go kazuo ishiguro on silence erling kagge louise gluck wild iris">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 4</span><div class="joy-dot"></div><div><div class="week-title">Voice &amp; Silence</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Never Let Me Go</span><span class="reading-author">Kazuo Ishiguro</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">On Silence</span><span class="reading-author">Erling Kagge</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">The Wild Iris</span><span class="reading-author">Louise Glück</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Where has silence protected me — and where has it harmed me?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w4', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 5 -->
+      <div class="week-card" data-week="5" data-q="q1" data-theme="constraint awakening feminism" data-joy="false" data-text="constraint awakening kate chopin invisible women caroline criado perez adrienne rich diving into the wreck">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 5</span><div class="joy-dot"></div><div><div class="week-title">Constraint &amp; Awakening</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Awakening</span><span class="reading-author">Kate Chopin</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Invisible Women</span><span class="reading-author">Caroline Criado Perez</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Diving Into the Wreck</span><span class="reading-author">Adrienne Rich</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What am I waking up to now, even if slowly?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w5', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 6 -->
+      <div class="week-card" data-week="6" data-q="q1" data-theme="recognition identity becoming" data-joy="false" data-text="recognition becoming giovanni's room james baldwin how to know a person david brooks ocean vuong night sky exit wounds">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 6</span><div class="joy-dot"></div><div><div class="week-title">Recognition &amp; Becoming</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Giovanni's Room</span><span class="reading-author">James Baldwin</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">How to Know a Person</span><span class="reading-author">David Brooks</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Night Sky With Exit Wounds</span><span class="reading-author">Ocean Vuong</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Where do I feel most fully seen — and by whom?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w6', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 7 -->
+      <div class="week-card" data-week="7" data-q="q1" data-theme="grief love continuity" data-joy="false" data-text="grief continuity observed cs lewis on grief grieving kübler-ross emily dickinson">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 7</span><div class="joy-dot"></div><div><div class="week-title">Grief &amp; Continuity</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">A Grief Observed</span><span class="reading-author">C.S. Lewis</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">On Grief and Grieving</span><span class="reading-author">Kübler-Ross</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Selected poems</span><span class="reading-author">Emily Dickinson</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What has grief taught me about love?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w7', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 8 -->
+      <div class="week-card" data-week="8" data-q="q1" data-theme="time regret stillness" data-joy="false" data-text="time regret stillness remains of the day kazuo ishiguro art of stillness pico iyer tomas transtromer half-finished heaven">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 8</span><div class="joy-dot"></div><div><div class="week-title">Time, Regret &amp; Stillness</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Remains of the Day</span><span class="reading-author">Kazuo Ishiguro</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Art of Stillness</span><span class="reading-author">Pico Iyer</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">The Half-Finished Heaven</span><span class="reading-author">Tomas Tranströmer</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What do I wish I had said — or might still say?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w8', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 9 -->
+      <div class="week-card" data-week="9" data-q="q1" data-theme="family systems" data-joy="false" data-text="family systems commonwealth ann patchett it didn't start with you mark wolynn sharon olds stag's leap">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 9</span><div class="joy-dot"></div><div><div class="week-title">Family Systems</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Commonwealth</span><span class="reading-author">Ann Patchett</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">It Didn't Start With You</span><span class="reading-author">Mark Wolynn</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Stag's Leap</span><span class="reading-author">Sharon Olds</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Which family stories do I carry — and which can I loosen?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w9', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 10 -->
+      <div class="week-card" data-week="10" data-q="q1" data-theme="narrative identity story" data-joy="false" data-text="narrative identity austerlitz wg sebald stories we tell richard holloway anne carson plainwater">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 10</span><div class="joy-dot"></div><div><div class="week-title">Narrative Identity</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Austerlitz</span><span class="reading-author">W.G. Sebald</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Stories We Tell Ourselves</span><span class="reading-author">Richard Holloway</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Plainwater</span><span class="reading-author">Anne Carson</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What story about myself feels overdue for revision?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w10', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 11 -->
+      <div class="week-card" data-week="11" data-q="q1" data-theme="ethics seeing moral" data-joy="false" data-text="ethical seeing disgrace jm coetzee moral injury patricia watson seamus heaney human chain">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 11</span><div class="joy-dot"></div><div><div class="week-title">Ethical Seeing</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Disgrace</span><span class="reading-author">J.M. Coetzee</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Moral Injury</span><span class="reading-author">Patricia Watson</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Human Chain</span><span class="reading-author">Seamus Heaney</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Where do I feel ethically tender right now?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w11', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 12 -->
+      <div class="week-card" data-week="12" data-q="q1" data-theme="meaning existence philosophy" data-joy="false" data-text="meaning illusion unbearable lightness being milan kundera man's search meaning viktor frankl czeslaw milosz">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 12</span><div class="joy-dot"></div><div><div class="week-title">Meaning Without Illusion</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Unbearable Lightness of Being</span><span class="reading-author">Milan Kundera</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Man's Search for Meaning</span><span class="reading-author">Viktor Frankl</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Selected poems</span><span class="reading-author">Czesław Miłosz</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What feels worth choosing, even without certainty?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w12', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 13 -->
+      <div class="week-card" data-week="13" data-q="q1" data-theme="integration praise nature gratitude" data-joy="false" data-text="integration praise pilgrim tinker creek annie dillard life of one's own marion milner wendell berry sabbaths">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 13</span><div class="joy-dot"></div><div><div class="week-title">Integration &amp; Praise</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Pilgrim at Tinker Creek</span><span class="reading-author">Annie Dillard</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">A Life of One's Own</span><span class="reading-author">Marion Milner</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Sabbaths</span><span class="reading-author">Wendell Berry</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What ordinary thing feels quietly miraculous to me?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w13', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ Q2 ═══ -->
+  <div class="q-panel q2-panel" id="q2">
+    <div class="q-header">
+      <p class="q-header-label" style="color:var(--q2-text)">Q2 · Weeks 14–26</p>
+      <h2>Care, Learning &amp; Making</h2>
+      <p>Ethics, accessibility, pedagogy — with delight allowed</p>
+    </div>
+    <div class="weeks-list">
+
+      <!-- WEEK 14 -->
+      <div class="week-card" data-week="14" data-q="q2" data-theme="learning ethics care" data-joy="false" data-text="learning moral attention middlemarch george eliot teaching to transgress bell hooks denise levertov">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 14</span><div class="joy-dot"></div><div><div class="week-title">Learning as Moral Attention</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Middlemarch</span><span class="reading-author">George Eliot</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Teaching to Transgress</span><span class="reading-author">bell hooks</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Selected poems</span><span class="reading-author">Denise Levertov</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Who taught me how to think with care?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w14', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 15 -->
+      <div class="week-card" data-week="15" data-q="q2" data-theme="power voice pedagogy" data-joy="false" data-text="power voice prime miss jean brodie muriel spark pedagogy oppressed paulo freire audre lorde black unicorn">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 15</span><div class="joy-dot"></div><div><div class="week-title">Power &amp; Voice</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Prime of Miss Jean Brodie</span><span class="reading-author">Muriel Spark</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Pedagogy of the Oppressed</span><span class="reading-author">Paulo Freire</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">The Black Unicorn</span><span class="reading-author">Audre Lorde</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Where do I hold power — and how do I use it?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w15', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 16 — JOY -->
+      <div class="week-card is-joy" data-week="16" data-q="q2" data-theme="play joy learning intelligence" data-joy="true" data-text="playful intelligence calvino winter's night traveler range david epstein billy collins sailing alone around the room">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 16</span><div class="joy-dot"></div><div><div class="week-title">Playful Intelligence</div></div></div>
+          <div class="week-head-right">
+            <span class="joy-badge">● Joy week</span>
+            <button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">If on a winter's night a traveler</span><span class="reading-author">Italo Calvino</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Range</span><span class="reading-author">David Epstein</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Sailing Alone Around the Room</span><span class="reading-author">Billy Collins</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">How does play change the way I learn?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w16', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 17 -->
+      <div class="week-card" data-week="17" data-q="q2" data-theme="fragility genius sensitivity" data-joy="false" data-text="fragility genius bell jar sylvia plath hidden potential adam grant ariel">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 17</span><div class="joy-dot"></div><div><div class="week-title">Fragility &amp; Genius</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Bell Jar</span><span class="reading-author">Sylvia Plath</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Hidden Potential</span><span class="reading-author">Adam Grant</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Ariel</span><span class="reading-author">Sylvia Plath</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Where do sensitivity and strength overlap in me?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w17', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 18 -->
+      <div class="week-card" data-week="18" data-q="q2" data-theme="relational care work" data-joy="false" data-text="relational work outline rachel cusk care ethics virginia held mary ruefle dunce">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 18</span><div class="joy-dot"></div><div><div class="week-title">Relational Work</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Outline</span><span class="reading-author">Rachel Cusk</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Care Ethics</span><span class="reading-author">Virginia Held</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Dunce</span><span class="reading-author">Mary Ruefle</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What does care require of me this season?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w18', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 19 -->
+      <div class="week-card" data-week="19" data-q="q2" data-theme="interdependence nature ecology" data-joy="false" data-text="interdependence overstory richard powers braiding sweetgrass robin wall kimmerer joy harjo american sunrise">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 19</span><div class="joy-dot"></div><div><div class="week-title">Interdependence</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Overstory</span><span class="reading-author">Richard Powers</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Braiding Sweetgrass</span><span class="reading-author">Robin Wall Kimmerer</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">An American Sunrise</span><span class="reading-author">Joy Harjo</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Where am I part of something larger than myself?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w19', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 20 -->
+      <div class="week-card" data-week="20" data-q="q2" data-theme="work time joy" data-joy="false" data-text="work time wry joy mezzanine nicholson baker bullshit jobs david graeber philip levine what work is">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 20</span><div class="joy-dot"></div><div><div class="week-title">Work, Time &amp; Wry Joy</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Mezzanine</span><span class="reading-author">Nicholson Baker</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Bullshit Jobs</span><span class="reading-author">David Graeber</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">What Work Is</span><span class="reading-author">Philip Levine</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What small, overlooked moment do I secretly love?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w20', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 21 -->
+      <div class="week-card" data-week="21" data-q="q2" data-theme="accessibility dignity disability" data-joy="false" data-text="accessibility dignity blindness josé saramago demystifying disability emily ladau naomi shihab nye fuel">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 21</span><div class="joy-dot"></div><div><div class="week-title">Accessibility &amp; Dignity</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Blindness</span><span class="reading-author">José Saramago</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Demystifying Disability</span><span class="reading-author">Emily Ladau</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Fuel</span><span class="reading-author">Naomi Shihab Nye</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What would a truly accessible world feel like?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w21', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 22 -->
+      <div class="week-card" data-week="22" data-q="q2" data-theme="teaching presence" data-joy="false" data-text="teaching presence lighthouse virginia woolf courage to teach parker palmer hd">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 22</span><div class="joy-dot"></div><div><div class="week-title">Teaching as Presence</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">To the Lighthouse</span><span class="reading-author">Virginia Woolf</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Courage to Teach</span><span class="reading-author">Parker Palmer</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Selected poems</span><span class="reading-author">H.D.</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">How do I show up when I'm most present?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w22', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 23 -->
+      <div class="week-card" data-week="23" data-q="q2" data-theme="care capitalism labour" data-joy="false" data-text="care capitalism hours michael cunningham care work piepzna-samarasinha june jordan">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 23</span><div class="joy-dot"></div><div><div class="week-title">Care Under Capitalism</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Hours</span><span class="reading-author">Michael Cunningham</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Care Work</span><span class="reading-author">Piepzna-Samarasinha</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Selected poems</span><span class="reading-author">June Jordan</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What kind of care sustains me?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w23', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 24 -->
+      <div class="week-card" data-week="24" data-q="q2" data-theme="knowledge humility" data-joy="false" data-text="knowledge humility possessing secret joy alice walker thinking bets annie duke lucille clifton blessing boats">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 24</span><div class="joy-dot"></div><div><div class="week-title">Knowledge &amp; Humility</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Possessing the Secret of Joy</span><span class="reading-author">Alice Walker</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Thinking in Bets</span><span class="reading-author">Annie Duke</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Blessing the Boats</span><span class="reading-author">Lucille Clifton</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What am I still learning how to hold gently?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w24', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 25 — JOY -->
+      <div class="week-card is-joy" data-week="25" data-q="q2" data-theme="companionship gratitude friendship" data-joy="true" data-text="companionship friend sigrid nunez gratitude oliver sacks ross gay catalog unabashed gratitude">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 25</span><div class="joy-dot"></div><div><div class="week-title">Companionship</div></div></div>
+          <div class="week-head-right">
+            <span class="joy-badge">● Joy week</span>
+            <button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Friend</span><span class="reading-author">Sigrid Nunez</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Gratitude</span><span class="reading-author">Oliver Sacks</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Catalog of Unabashed Gratitude</span><span class="reading-author">Ross Gay</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Who or what keeps me company in hard times?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w25', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 26 -->
+      <div class="week-card" data-week="26" data-q="q2" data-theme="integration values feminism" data-joy="false" data-text="integration values feminist life sara ahmed hospicing modernity vanessa machado maggie smith good bones">
+        <div class="week-head" onclick="toggleWeek(this)">
+          <div class="week-head-left"><span class="week-num-badge">Week 26</span><div class="joy-dot"></div><div><div class="week-title">Integration</div></div></div>
+          <div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div>
+        </div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Living a Feminist Life</span><span class="reading-author">Sara Ahmed</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Hospicing Modernity</span><span class="reading-author">Vanessa Machado de Oliveira</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Good Bones</span><span class="reading-author">Maggie Smith</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What values feel non-negotiable now?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w26', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ Q3 ═══ -->
+  <div class="q-panel q3-panel" id="q3">
+    <div class="q-header">
+      <p class="q-header-label" style="color:var(--q3-text)">Q3 · Weeks 27–39</p>
+      <h2>Body, Nature &amp; Repair</h2>
+      <p>Rest, imagination, joy as medicine</p>
+    </div>
+    <div class="weeks-list">
+
+      <!-- WEEK 27 -->
+      <div class="week-card" data-week="27" data-q="q3" data-theme="rest stillness summer" data-joy="false" data-text="summer stillness summer book tove jansson burnout nagoski ada limon bright dead things">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 27</span><div class="joy-dot"></div><div><div class="week-title">Summer Stillness</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Summer Book</span><span class="reading-author">Tove Jansson</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Burnout</span><span class="reading-author">Nagoski sisters</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Bright Dead Things</span><span class="reading-author">Ada Limón</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What does rest make possible?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w27', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 28 -->
+      <div class="week-card" data-week="28" data-q="q3" data-theme="cycles body belonging" data-joy="false" data-text="cycles belonging prodigal summer barbara kingsolver why we sleep matthew walker mary oliver house of light">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 28</span><div class="joy-dot"></div><div><div class="week-title">Cycles &amp; Belonging</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Prodigal Summer</span><span class="reading-author">Barbara Kingsolver</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Why We Sleep</span><span class="reading-author">Matthew Walker</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">House of Light</span><span class="reading-author">Mary Oliver</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Where do I feel most at home in my body?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w28', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 29 -->
+      <div class="week-card" data-week="29" data-q="q3" data-theme="future fragility survival" data-joy="false" data-text="fragile futures station eleven emily st john mandel anthropocene reviewed john green tracy k smith life on mars">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 29</span><div class="joy-dot"></div><div><div class="week-title">Fragile Futures</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Station Eleven</span><span class="reading-author">Emily St. John Mandel</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Anthropocene Reviewed</span><span class="reading-author">John Green</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Life on Mars</span><span class="reading-author">Tracy K. Smith</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What endures when structures fall away?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w29', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 30 — JOY -->
+      <div class="week-card is-joy" data-week="30" data-q="q3" data-theme="imagination freedom sci-fi" data-joy="true" data-text="imaginative freedom piranesi susanna clarke carrier bag theory fiction ursula le guin late in the day">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 30</span><div class="joy-dot"></div><div><div class="week-title">Imaginative Freedom</div></div></div><div class="week-head-right"><span class="joy-badge">● Joy week</span><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Piranesi</span><span class="reading-author">Susanna Clarke</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Carrier Bag Theory of Fiction</span><span class="reading-author">Ursula Le Guin</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Late in the Day</span><span class="reading-author">Ursula Le Guin</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What kind of world do I want to imagine into being?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w30', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 31 -->
+      <div class="week-card" data-week="31" data-q="q3" data-theme="trauma repair healing" data-joy="false" data-text="trauma repair beloved toni morrison body keeps the score van der kolk natalie diaz postcolonial love poem">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 31</span><div class="joy-dot"></div><div><div class="week-title">Trauma &amp; Repair</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Beloved</span><span class="reading-author">Toni Morrison</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Body Keeps the Score</span><span class="reading-author">van der Kolk</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Postcolonial Love Poem</span><span class="reading-author">Natalie Diaz</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What does healing ask me to remember?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w31', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 32 — JOY -->
+      <div class="week-card is-joy" data-week="32" data-q="q3" data-theme="survival rest gentle" data-joy="true" data-text="gentle survival pilgrimage annie ernaux rest is resistance tricia hersey wendell berry leavings">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 32</span><div class="joy-dot"></div><div><div class="week-title">Gentle Survival</div></div></div><div class="week-head-right"><span class="joy-badge">● Joy week</span><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Pilgrimage</span><span class="reading-author">Annie Ernaux</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Rest Is Resistance</span><span class="reading-author">Tricia Hersey</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Leavings</span><span class="reading-author">Wendell Berry</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Where am I allowed to be unfinished?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w32', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 33 -->
+      <div class="week-card" data-week="33" data-q="q3" data-theme="attention nature ecology unsettling" data-joy="false" data-text="attention medicine annihilation jeff vandermeer being ecological timothy morton jorie graham fast">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 33</span><div class="joy-dot"></div><div><div class="week-title">Attention as Medicine</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Annihilation</span><span class="reading-author">Jeff VanderMeer</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Being Ecological</span><span class="reading-author">Timothy Morton</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Fast</span><span class="reading-author">Jorie Graham</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What unsettles me — and why might that matter?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w33', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 34 -->
+      <div class="week-card" data-week="34" data-q="q3" data-theme="embodiment body emotions" data-joy="false" data-text="embodiment dept speculation jenny offill how emotions made lisa feldman barrett caconrad golden boomerang">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 34</span><div class="joy-dot"></div><div><div class="week-title">Embodiment</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Dept. of Speculation</span><span class="reading-author">Jenny Offill</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">How Emotions Are Made</span><span class="reading-author">Lisa Feldman Barrett</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Listen to the Golden Boomerang</span><span class="reading-author">CAConrad</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What is my body trying to tell me lately?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w34', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 35 -->
+      <div class="week-card" data-week="35" data-q="q3" data-theme="loss meaning" data-joy="false" data-text="loss meaning end of the affair graham greene field guide getting lost rebecca solnit galway kinnell">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 35</span><div class="joy-dot"></div><div><div class="week-title">Loss &amp; Meaning</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The End of the Affair</span><span class="reading-author">Graham Greene</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">A Field Guide to Getting Lost</span><span class="reading-author">Rebecca Solnit</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Selected poems</span><span class="reading-author">Galway Kinnell</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What have I lost that still shapes me?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w35', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 36 -->
+      <div class="week-card" data-week="36" data-q="q3" data-theme="care practice daily" data-joy="false" data-text="care practice salt path raynor winn care soul thomas moore david whyte consolations">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 36</span><div class="joy-dot"></div><div><div class="week-title">Care as Practice</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Salt Path</span><span class="reading-author">Raynor Winn</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Care of the Soul</span><span class="reading-author">Thomas Moore</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Consolations</span><span class="reading-author">David Whyte</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What does daily care look like for me?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w36', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 37 — JOY -->
+      <div class="week-card is-joy" data-week="37" data-q="q3" data-theme="creative survival expression" data-joy="true" data-text="creative survival girl woman other bernardine evaristo big magic elizabeth gilbert nayyirah waheed salt">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 37</span><div class="joy-dot"></div><div><div class="week-title">Creative Survival</div></div></div><div class="week-head-right"><span class="joy-badge">● Joy week</span><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Girl, Woman, Other</span><span class="reading-author">Bernardine Evaristo</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Big Magic</span><span class="reading-author">Elizabeth Gilbert</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">salt.</span><span class="reading-author">Nayyirah Waheed</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What wants to be expressed through me?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w37', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 38 -->
+      <div class="week-card" data-week="38" data-q="q3" data-theme="slowness pace walking" data-joy="false" data-text="slowness old ways robert macfarlane in praise slowness carl honoré li-young lee rose">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 38</span><div class="joy-dot"></div><div><div class="week-title">Slowness</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Old Ways</span><span class="reading-author">Robert Macfarlane</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">In Praise of Slowness</span><span class="reading-author">Carl Honoré</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Rose</span><span class="reading-author">Li-Young Lee</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Where can I slow down without guilt?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w38', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 39 -->
+      <div class="week-card" data-week="39" data-q="q3" data-theme="integration gratitude nature body" data-joy="false" data-text="integration praise braiding sweetgrass kimmerer stillness is key ryan holiday jane hirshfield come thief">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 39</span><div class="joy-dot"></div><div><div class="week-title">Integration &amp; Praise</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Braiding Sweetgrass (selected chapters)</span><span class="reading-author">Robin Wall Kimmerer</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Stillness Is the Key</span><span class="reading-author">Ryan Holiday</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Come, Thief</span><span class="reading-author">Jane Hirshfield</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What am I grateful for in my body and place?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w39', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ Q4 ═══ -->
+  <div class="q-panel q4-panel" id="q4">
+    <div class="q-header">
+      <p class="q-header-label" style="color:var(--q4-text)">Q4 · Weeks 40–52</p>
+      <h2>Time, Aging &amp; Offering</h2>
+      <p>Wisdom, tenderness, joy as ethical stance</p>
+    </div>
+    <div class="weeks-list">
+
+      <!-- WEEK 40 -->
+      <div class="week-card" data-week="40" data-q="q4" data-theme="friendship time" data-joy="false" data-text="friendship time crossing safety wallace stegner on friendship epicurus donald hall without">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 40</span><div class="joy-dot"></div><div><div class="week-title">Friendship &amp; Time</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Crossing to Safety</span><span class="reading-author">Wallace Stegner</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">On Friendship</span><span class="reading-author">Epicurus (audio essays)</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Without</span><span class="reading-author">Donald Hall</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">Who has walked beside me over time?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w40', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 41 -->
+      <div class="week-card" data-week="41" data-q="q4" data-theme="mortality death urgency" data-joy="false" data-text="mortality death ivan ilyich tolstoy being mortal atul gawande christian wiman survival is a style">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 41</span><div class="joy-dot"></div><div><div class="week-title">Mortality</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Death of Ivan Ilyich</span><span class="reading-author">Tolstoy</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Being Mortal</span><span class="reading-author">Atul Gawande</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Survival Is a Style</span><span class="reading-author">Christian Wiman</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What gives my life urgency?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w41', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 42 -->
+      <div class="week-card" data-week="42" data-q="q4" data-theme="ritual meaning" data-joy="false" data-text="ritual meaning christmas carol dickens rituals dimitris xygalatas rs thomas">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 42</span><div class="joy-dot"></div><div><div class="week-title">Ritual &amp; Meaning</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">A Christmas Carol</span><span class="reading-author">Dickens</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Rituals</span><span class="reading-author">Dimitris Xygalatas</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Selected poems</span><span class="reading-author">R.S. Thomas</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What rituals sustain me?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w42', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 43 -->
+      <div class="week-card" data-week="43" data-q="q4" data-theme="story afterlife legacy" data-joy="false" data-text="story afterlife lincoln bardo george saunders book you wish parents read philippa perry emily dickinson">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 43</span><div class="joy-dot"></div><div><div class="week-title">Story &amp; Afterlife</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Lincoln in the Bardo</span><span class="reading-author">George Saunders</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Book You Wish Your Parents Had Read</span><span class="reading-author">Philippa Perry</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Selected poems (return)</span><span class="reading-author">Emily Dickinson</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What stories do I want to leave behind?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w43', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 44 -->
+      <div class="week-card" data-week="44" data-q="q4" data-theme="aging grace" data-joy="false" data-text="aging grace olive again elizabeth strout art of aging joan chittister may sarton">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 44</span><div class="joy-dot"></div><div><div class="week-title">Aging with Grace</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Olive, Again</span><span class="reading-author">Elizabeth Strout</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Art of Aging</span><span class="reading-author">Joan Chittister</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Later poems</span><span class="reading-author">May Sarton</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">How do I imagine growing older?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w44', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 45 — JOY -->
+      <div class="week-card is-joy" data-week="45" data-q="q4" data-theme="wisdom wonder" data-joy="true" data-text="wisdom wonder prophet kahlil gibran wisdom insecurity alan watts hafiz">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 45</span><div class="joy-dot"></div><div><div class="week-title">Wisdom &amp; Wonder</div></div></div><div class="week-head-right"><span class="joy-badge">● Joy week</span><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Prophet</span><span class="reading-author">Kahlil Gibran</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Wisdom of Insecurity</span><span class="reading-author">Alan Watts</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Selected poems</span><span class="reading-author">Hafiz</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What feels wise rather than clever?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w45', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 46 -->
+      <div class="week-card" data-week="46" data-q="q4" data-theme="letting go release" data-joy="false" data-text="letting go years annie ernaux comfort book matt haig sappho fragments">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 46</span><div class="joy-dot"></div><div><div class="week-title">Letting Go</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Years</span><span class="reading-author">Annie Ernaux</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Comfort Book</span><span class="reading-author">Matt Haig</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Fragments</span><span class="reading-author">Sappho</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What am I ready to release?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w46', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 47 -->
+      <div class="week-card" data-week="47" data-q="q4" data-theme="seeing perception vision" data-joy="false" data-text="seeing again rings saturn wg sebald ways of seeing john berger charles wright black zodiac">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 47</span><div class="joy-dot"></div><div><div class="week-title">Seeing Again</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Rings of Saturn</span><span class="reading-author">W.G. Sebald</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Ways of Seeing</span><span class="reading-author">John Berger</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Black Zodiac</span><span class="reading-author">Charles Wright</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">How has my way of seeing changed this year?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w47', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 48 -->
+      <div class="week-card" data-week="48" data-q="q4" data-theme="devotion faith practice" data-joy="false" data-text="devotion silence shusaku endo practice presence god brother lawrence thomas merton">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 48</span><div class="joy-dot"></div><div><div class="week-title">Devotion</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Silence</span><span class="reading-author">Shūsaku Endō</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Practice of the Presence of God</span><span class="reading-author">Brother Lawrence</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Poetic prose</span><span class="reading-author">Thomas Merton</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What does devotion mean to me now?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w48', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 49 — JOY -->
+      <div class="week-card is-joy" data-week="49" data-q="q4" data-theme="offering story ordinary" data-joy="true" data-text="offering manual cleaning women lucia berlin on being ill virginia woolf marie howe what the living do">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 49</span><div class="joy-dot"></div><div><div class="week-title">Offering</div></div></div><div class="week-head-right"><span class="joy-badge">● Joy week</span><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">A Manual for Cleaning Women</span><span class="reading-author">Lucia Berlin</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">On Being Ill</span><span class="reading-author">Virginia Woolf</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">What the Living Do</span><span class="reading-author">Marie Howe</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What ordinary offering can I make?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w49', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 50 -->
+      <div class="week-card" data-week="50" data-q="q4" data-theme="wintering season rest" data-joy="false" data-text="wintering katherine may how to do nothing jenny odell rilke book of hours">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 50</span><div class="joy-dot"></div><div><div class="week-title">Wintering</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Wintering</span><span class="reading-author">Katherine May</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">How to Do Nothing</span><span class="reading-author">Jenny Odell</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Book of Hours</span><span class="reading-author">Rilke</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What season am I truly in?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w50', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 51 -->
+      <div class="week-card" data-week="51" data-q="q4" data-theme="gratitude goodness small" data-joy="false" data-text="gratitude small things like these claire keegan gratitude oliver sacks pablo neruda odes">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 51</span><div class="joy-dot"></div><div><div class="week-title">Gratitude</div></div></div><div class="week-head-right"><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">Small Things Like These</span><span class="reading-author">Claire Keegan</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">Gratitude</span><span class="reading-author">Oliver Sacks</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Odes</span><span class="reading-author">Pablo Neruda</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What small goodness do I want to remember?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w51', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+      <!-- WEEK 52 — JOY -->
+      <div class="week-card is-joy" data-week="52" data-q="q4" data-theme="joy wisdom year" data-joy="true" data-text="joy wisdom book delights ross gay art living thich nhat hanh mary oliver why i wake early">
+        <div class="week-head" onclick="toggleWeek(this)"><div class="week-head-left"><span class="week-num-badge">Week 52</span><div class="joy-dot"></div><div><div class="week-title">Joy as Wisdom</div></div></div><div class="week-head-right"><span class="joy-badge">● Joy week</span><button class="read-toggle" onclick="toggleRead(event, this)">Mark read</button><span class="chevron">▼</span></div></div>
+        <div class="week-body"><div class="week-body-inner">
+          <div class="reading-item"><span class="reading-icon">📖</span><div class="reading-content"><span class="reading-type">Book</span><span class="reading-title">The Book of Delights</span><span class="reading-author">Ross Gay</span></div></div>
+          <div class="reading-item"><span class="reading-icon">🎧</span><div class="reading-content"><span class="reading-type">Audiobook</span><span class="reading-title">The Art of Living</span><span class="reading-author">Thich Nhat Hanh</span></div></div>
+          <div class="reading-item"><span class="reading-icon">✦</span><div class="reading-content"><span class="reading-type">Poetry</span><span class="reading-title">Why I Wake Early</span><span class="reading-author">Mary Oliver</span></div></div>
+          <div class="journal-row"><span class="journal-icon">✎</span><div><span class="journal-label">Journal prompt</span><span class="journal-prompt">What did this year teach me about joy?</span></div></div>
+          <div class="notes-row"><span class="notes-label">My notes</span><textarea class="notes-textarea" placeholder="Thoughts, connections, what resonated…" oninput="saveNote('w52', this.value)"></textarea></div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Final note -->
+  <div class="final-note" style="margin-top:2.5rem">
+    <p><strong>A final note.</strong><br>This is not a schedule.<br>It is a companionship.</p>
+  </div>
+
+  <footer>
+    <p>2026 Reading Arc · Personal syllabus · Last updated <span id="last-updated"></span></p>
+  </footer>
+
+</div>
+
+<script>
+  document.getElementById('last-updated').textContent =
+    new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // ── Quarter switching ──
+  let currentQ = 'q1';
+
+  function showQ(q, btn) {
+    document.querySelectorAll('.q-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.q-btn').forEach(b => {
+      b.classList.remove('active-q1','active-q2','active-q3','active-q4');
+    });
+    document.getElementById(q).classList.add('active');
+    btn.classList.add('active-' + q);
+    currentQ = q;
+    clearFilters();
+    document.getElementById('search-input').value = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Week accordion ──
+  function toggleWeek(head) {
+    const card = head.closest('.week-card');
+    card.classList.toggle('open');
+    if (card.classList.contains('open')) {
+      const key = 'w' + card.dataset.week;
+      const saved = localStorage.getItem('note_' + key);
+      if (saved) {
+        const ta = card.querySelector('.notes-textarea');
+        if (ta) ta.value = saved;
+      }
+    }
+  }
+
+  // ── Read toggle ──
+  function toggleRead(e, btn) {
+    e.stopPropagation();
+    btn.classList.toggle('read');
+    btn.textContent = btn.classList.contains('read') ? '✓ Read' : 'Mark read';
+    const card = btn.closest('.week-card');
+    const key = 'read_w' + card.dataset.week;
+    localStorage.setItem(key, btn.classList.contains('read') ? '1' : '0');
+    updateProgress();
+  }
+
+  // ── Notes ──
+  function saveNote(key, val) {
+    localStorage.setItem('note_' + key, val);
+  }
+
+  // ── Progress ──
+  function updateProgress() {
+    const all   = document.querySelectorAll('.week-card');
+    const joys  = document.querySelectorAll('.week-card.is-joy');
+    let readCount = 0, joyRead = 0;
+    all.forEach(card => {
+      const key = 'read_w' + card.dataset.week;
+      if (localStorage.getItem(key) === '1') {
+        readCount++;
+        if (card.dataset.joy === 'true') joyRead++;
+      }
+    });
+    document.getElementById('stat-read').textContent = readCount;
+    const pct = Math.round((readCount / 52) * 100);
+    document.getElementById('stat-pct').textContent = pct + '%';
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('stat-joy').textContent = joyRead + ' / 7 joy weeks read';
+  }
+
+  // ── Restore read states ──
+  function restoreState() {
+    document.querySelectorAll('.week-card').forEach(card => {
+      const key = 'read_w' + card.dataset.week;
+      if (localStorage.getItem(key) === '1') {
+        const btn = card.querySelector('.read-toggle');
+        if (btn) { btn.classList.add('read'); btn.textContent = '✓ Read'; }
+      }
+    });
+    updateProgress();
+  }
+
+  // ── Filters ──
+  let activeFilters = new Set();
+
+  function toggleFilter(filter, btn) {
+    btn.classList.toggle('on');
+    if (activeFilters.has(filter)) { activeFilters.delete(filter); }
+    else { activeFilters.add(filter); }
+    applyFilters();
+  }
+
+  function clearFilters() {
+    activeFilters.clear();
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('on'));
+  }
+
+  function applyFilters() {
+    const query = document.getElementById('search-input').value.toLowerCase().trim();
+    let anyVisible = false;
+
+    document.querySelectorAll('.week-card').forEach(card => {
+      let show = true;
+
+      if (query) {
+        const text = (card.dataset.text || '') + ' ' + (card.dataset.theme || '');
+        show = text.toLowerCase().includes(query);
+      }
+
+      if (show && activeFilters.has('joy')) {
+        show = card.dataset.joy === 'true';
+      }
+
+      card.classList.toggle('hidden', !show);
+      if (show) anyVisible = true;
+    });
+
+    document.getElementById('no-results').style.display = anyVisible ? 'none' : 'block';
+  }
+
+  function filterWeeks() { applyFilters(); }
+
+  // ── Init ──
+  restoreState();
+</script>
+</body>
+</html>
